@@ -1,3 +1,4 @@
+const { default: userEvent } = require('@testing-library/user-event');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
@@ -10,7 +11,6 @@ const UserSchema = new Schema({
     type:String,
     required:true,
     unique: true
-
    },
    password:{
     type:String,
@@ -21,4 +21,6 @@ const UserSchema = new Schema({
     default:Date.now
    },
   });
-  module.exports=mongoose.model('user',UserSchema)
+  const User =mongoose.model('user',UserSchema);
+  User.createIndexes();
+  module.exports=User
