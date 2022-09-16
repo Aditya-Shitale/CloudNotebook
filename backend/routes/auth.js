@@ -52,9 +52,53 @@ router.post(
 
     } catch (error) {
       console.error(error.message);
-      res.status(500).send("error 404");
+      res.status(500).send("error occured in code");
     }
   }
 );
+
+
+//Authenticate a user  using :POST "/api/auth/login" No login required dosent require auth
+router.post(
+  "/login",
+  [
+    body('email', 'Enter valid email').isEmail(),
+    body('password','password cannot be blank').exists(),
+  ],
+  async (req, res) => {
+      //if there are errors return bad request
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    //destructuring used 
+    const {email,password}= req.body;
+    try {
+      let user =await User.findOne({email});
+      if(!user){
+        return res.status(400).json({error: 'Login with valid credentials'});
+      }
+
+const passwordCompare = await bcrypt.compare(password,user.password);
+if(!passwordCompare){
+  return res.status(400).json({error: 'Login with valid credentials'});
+}
+const data= {
+  user:{
+    id:user.id
+  }
+}
+const authToken=jwt.sign(data,JWT_SECRET);
+res.json({authToken})
+
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Internal error occured");
+    }
+
+
+    })
+
 
 module.exports = router;
