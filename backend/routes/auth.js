@@ -4,9 +4,10 @@ const User = require("../models/User");
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
+var fetchuser = require('../middleware/fetchuser');
 const JWT_SECRET = 'HereWeAutheticare$';
 
-//create a user using :POST "/api/auth/createUser" No login required dosent require auth
+//Router 1:  create a user using :POST "/api/auth/createUser" No login required dosent require auth
 router.post(
   "/createuser",
   [
@@ -58,14 +59,11 @@ router.post(
 );
 
 
-//Authenticate a user  using :POST "/api/auth/login" No login required dosent require auth
-router.post(
-  "/login",
-  [
+//Router 2:   Authenticate a user  using :POST "/api/auth/login" No login required dosent require auth
+router.post( '/login',[
     body('email', 'Enter valid email').isEmail(),
     body('password','password cannot be blank').exists(),
-  ],
-  async (req, res) => {
+  ], async (req, res) => {
       //if there are errors return bad request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -76,7 +74,7 @@ router.post(
     const {email,password}= req.body;
     try {
       let user =await User.findOne({email});
-      if(!user){
+      if (!user) {
         return res.status(400).json({error: 'Login with valid credentials'});
       }
 
@@ -85,12 +83,12 @@ if(!passwordCompare){
   return res.status(400).json({error: 'Login with valid credentials'});
 }
 const data= {
-  user:{
-    id:user.id
+  user: {
+    id: user.id
   }
 }
 const authToken=jwt.sign(data,JWT_SECRET);
-res.json({authToken})
+res.json({ authToken })
 
     } catch (error) {
       console.error(error.message);
@@ -98,7 +96,22 @@ res.json({authToken})
     }
 
 
-    })
+    });
 
 
-module.exports = router;
+    //Router 3:   get logged in user detail  using :POST "/api/auth/getuser"  login required 
+
+    router.post('/getuser',fetchuser, async (req, res) => {
+        
+        try {
+         userId =req.user.id;
+         const user =await User.findById(userId).select("-password")
+         res.send(user)
+    
+        } catch (error) {
+          console.error(error.message);
+          res.status(500).send("Internal error occured");
+        }
+        });
+
+module.exports = router
