@@ -2,107 +2,103 @@
 import { useState } from "react";
 import NoteContext from "./noteContext";
 
-const NoteState =(props)=>{
+const NoteState = (props) => {
+  const host = "http://localhost:5000";
+  const notesInitial = [];
 
-    const notesInitial=[
-        
-            {
-              "_id": "632744b3732hdae7605d4a30b",
-              "user": "6324c1cf44781da8e9ea0c9f",
-              "title": "My note 1",
-              "description": "Wake up early 1",
-              "tag": "personal",
-              "date": "2022-09-18T16:17:55.426Z",
-              "__v": 0
-            },
-            {
-              "_id": "632744b3732daje7605d4a30d",
-              "user": "6324c1cf44781da8e9ea0c9f",
-              "title": "My note 1",
-              "description": "Wake up early 1",
-              "tag": "personal",
-              "date": "2022-09-18T16:17:55.560Z",
-              "__v": 0
-            },
-            {
-              "_id": "632744b3732dabe7605d4a30f",
-              "user": "6324c1cf44781da8e9ea0c9f",
-              "title": "My note 1",
-              "description": "Wake up early 1",
-              "tag": "personal",
-              "date": "2022-09-18T16:17:55.736Z",
-              "__v": 0
-            },
-            {
-              "_id": "6327493229141kae7ee53993f",
-              "user": "6324c1cf44781da8e9ea0c9f",
-              "title": "My note updated 1",
-              "description": "Wake up early updated 1",
-              "tag": "personal",
-              "date": "2022-09-18T16:37:06.964Z",
-              "__v": 0
-            },
-            {
-              "_id": "63274da18e5a1l177cfd53f26",
-              "user": "6324c1cf44781da8e9ea0c9f",
-              "title": "alarm 3",
-              "description": "dsa bdj",
-              "tag": "dsa Study",
-              "date": "2022-09-18T16:56:01.665Z",
-              "__v": 0
-            },
-            {
-              "_id": "632763b8423bf2bat1928b847",
-              "user": "6324c1cf44781da8e9ea0c9f",
-              "title": "alarm 4",
-              "description": "dsa here",
-              "tag": "dsa Study",
-              "date": "2022-09-18T18:30:16.228Z",
-              "__v": 0
-            },
-            {
-              "_id": "63289e7f126bc7gb3f4c52897",
-              "user": "6324c1cf44781da8e9ea0c9f",
-              "title": "alarm 4",
-              "description": "dsa here",
-              "tag": "dsa Study",
-              "date": "2022-09-19T16:53:19.427Z",
-              "__v": 0
-            }
-          
-    ]
-    const [notes,setNotes]=useState(notesInitial)
+  const [notes, setNotes] = useState(notesInitial);
+
+  //Get all notes
+  const getNotes = async () => {
+    const response = await fetch(`${host}/api/notes/fetchallnotes`, {
+      method: "GET",
+
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token":
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjMyNGMxY2Y0NDc4MWRhOGU5ZWEwYzlmIn0sImlhdCI6MTY2MzQyODQ2Nn0.W6FxekqLphyd4G73V6LyYCY8uEFh2YKA71rF8Df4fws",
+      }
+
+    });
+   
+    const json =await response.json();
+    console.log(json)
+    setNotes(json)
  
-    //Add a note
-  const addNote=(title, description, tag)=>{
-    console.log("add a note");
-      //Api calls to be cont
-    const note ={
-      "_id": "63289e7f126bhc7gb3f4c52897",
-      "user": "6324c1cf44781da8e9ea0c9f",
-      "title": title,
-      "description": description,
-      "tag": tag,
-      "date": "2022-09-19T16:53:19.427Z",
-      "__v": 0
-    };
-      setNotes(notes.concat(note));  //we wrote notes.push() first but we cant use it because concar returns an array whereas push updates an array
-  }
-    //Delete a note
- const deleteNote=(id)=>{
-    console.log("Delete a note with its ID"+ id);
-    const newNotes = notes.filter((note)=>{return note._id!==id})
-    setNotes(newNotes)
-  }
-    //update a note
-    const editNote=(id,title,description,tag)=>{
-    
-    }
+  };
 
-        return(
-            <NoteContext.Provider value={{notes,addNote, deleteNote, editNote}}>
-                {props.children}
-            </NoteContext.Provider>
-        )
-}
+
+
+  //Add a note
+  const addNote = async (title, description, tag) => {
+    const response = await fetch(`${host}/api/notes/addnote`, {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token":
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjMyNGMxY2Y0NDc4MWRhOGU5ZWEwYzlmIn0sImlhdCI6MTY2MzQyODQ2Nn0.W6FxekqLphyd4G73V6LyYCY8uEFh2YKA71rF8Df4fws",
+      },
+
+      body: JSON.stringify({ title, description, tag }),
+    });
+    // const json=response.json();
+
+    console.log("add a note");
+   
+    const note = {
+      _id: "63289e7f126bhc7gb3f4c52897",
+      user: "6324c1cf44781da8e9ea0c9f",
+      title: title,
+      description: description,
+      tag: tag,
+      date: "2022-09-19T16:53:19.427Z",
+      __v: 0,
+    };
+    setNotes(notes.concat(note)); //we wrote notes.push() first but we cant use it because concar returns an array whereas push updates an array
+  };
+
+
+
+  //Delete a note
+  const deleteNote = (id) => {
+    console.log("Delete a note with its ID" + id);
+    const newNotes = notes.filter((note) => {
+      return note._id !== id;
+    });
+    setNotes(newNotes);
+  };
+  //update a note
+  const editNote = async (id, title, description, tag) => {
+    //API call we pasted this function from developer mozilla by searching fetch with headers
+    const response = await fetch(`${host}/api/notes/updatenote/${id}`, {
+      method: "POST", // *GET, POST, PUT, DELETE, etc.
+
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token":
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjMyNGMxY2Y0NDc4MWRhOGU5ZWEwYzlmIn0sImlhdCI6MTY2MzQyODQ2Nn0.W6FxekqLphyd4G73V6LyYCY8uEFh2YKA71rF8Df4fws",
+      },
+
+      body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
+    });
+    const json = response.json();
+
+    //Logic to edit client
+    for (let index = 0; index < notes.length; index++) {
+      const element = notes[index];
+      if (element._id === id) {
+        element.title = title;
+        element.description = description;
+        element.tag = tag;
+      }
+    }
+  };
+
+  return (
+    <NoteContext.Provider value={{ notes, addNote, deleteNote, editNote ,getNotes }}>
+      {props.children}
+    </NoteContext.Provider>
+  );
+};
 export default NoteState;
