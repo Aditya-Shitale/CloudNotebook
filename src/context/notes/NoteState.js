@@ -17,17 +17,13 @@ const NoteState = (props) => {
         "Content-Type": "application/json",
         "auth-token":
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjMyNGMxY2Y0NDc4MWRhOGU5ZWEwYzlmIn0sImlhdCI6MTY2MzQyODQ2Nn0.W6FxekqLphyd4G73V6LyYCY8uEFh2YKA71rF8Df4fws",
-      }
-
+      },
     });
-   
-    const json =await response.json();
-    console.log(json)
-    setNotes(json)
- 
+
+    const json = await response.json();
+    console.log(json);
+    setNotes(json);
   };
-
-
 
   //Add a note
   const addNote = async (title, description, tag) => {
@@ -42,10 +38,10 @@ const NoteState = (props) => {
 
       body: JSON.stringify({ title, description, tag }),
     });
-    // const json=response.json();
+    
 
     console.log("add a note");
-   
+
     const note = {
       _id: "63289e7f126bhc7gb3f4c52897",
       user: "6324c1cf44781da8e9ea0c9f",
@@ -58,16 +54,28 @@ const NoteState = (props) => {
     setNotes(notes.concat(note)); //we wrote notes.push() first but we cant use it because concar returns an array whereas push updates an array
   };
 
-
-
   //Delete a note
-  const deleteNote = (id) => {
+  const deleteNote = async (id) => {
+    //API call
+    const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
+      method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token":
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjMyNGMxY2Y0NDc4MWRhOGU5ZWEwYzlmIn0sImlhdCI6MTY2MzQyODQ2Nn0.W6FxekqLphyd4G73V6LyYCY8uEFh2YKA71rF8Df4fws",
+      },
+    });
+    const json = response.json();
+    console.log(json);
+
     console.log("Delete a note with its ID" + id);
     const newNotes = notes.filter((note) => {
       return note._id !== id;
     });
     setNotes(newNotes);
   };
+
   //update a note
   const editNote = async (id, title, description, tag) => {
     //API call we pasted this function from developer mozilla by searching fetch with headers
@@ -96,7 +104,9 @@ const NoteState = (props) => {
   };
 
   return (
-    <NoteContext.Provider value={{ notes, addNote, deleteNote, editNote ,getNotes }}>
+    <NoteContext.Provider
+      value={{ notes, addNote, deleteNote, editNote, getNotes }}
+    >
       {props.children}
     </NoteContext.Provider>
   );
