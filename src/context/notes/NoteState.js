@@ -89,11 +89,13 @@ const NoteState =(props)=>{
       setNotes(notes.concat(note));  //we wrote notes.push() first but we cant use it because concar returns an array whereas push updates an array
   }
     //Delete a note
- const deleteNote=()=>{
-    
+ const deleteNote=(id)=>{
+    console.log("Delete a note with its ID"+ id);
+    const newNotes = notes.filter((note)=>{return note._id!==id})
+    setNotes(newNotes)
   }
     //update a note
-    const editNote=()=>{
+    const editNote=(id,title,description,tag)=>{
     
     }
 
