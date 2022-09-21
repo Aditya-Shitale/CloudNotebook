@@ -37,6 +37,7 @@ const Notes = () => {
     // console.log("updating the note",note);
     editNote(note.id,note.etitle,note.edescription,note.etag)
     refClose.current.click();
+    
   };
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
@@ -64,30 +65,37 @@ const Notes = () => {
 
             <form className="my-3"> 
           <div className="mb-3">
-            <label htmlFor="title" className="form-label">
+            <label htmlFor="title"  className="form-label">
               Title
             </label>
             <input
-              type="email"
+              type="text"
+             
               className="form-control"
               id="etitle"
               name="etitle"
               value={note.etitle}
               aria-describedby="emailHelp"
               onChange={onChange}
+              minLength={5}
+              required
             />
           </div>
           <div className="mb-3">
+          {/* placeholder="Atleast 5 characters required"  not working   */}
             <label htmlFor="description" className="form-label">
               Description
             </label>
             <input
               type="text"
+              placeholder="Atleast 5 characters required"
               className="form-control"
               value={note.edescription}
               id="edescription"
               name="edescription"
               onChange={onChange}
+              minLength={5}
+              required
             />
           </div>
           <div className="mb-3">
@@ -101,6 +109,7 @@ const Notes = () => {
               name="etag"
               value={note.etag}
               onChange={onChange}
+              
             />
           </div>
         
@@ -112,7 +121,7 @@ const Notes = () => {
               <Button ref={refClose} variant='ghost' mr={3} onClick={onClose}>
                 Close
               </Button>
-              <Button colorScheme='blue' onClick={handleClick}>Update</Button>
+              <Button disabled={note.etitle.length<5 &&note.edescription.length<5} colorScheme='blue' onClick={handleClick}>Update</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
@@ -120,7 +129,11 @@ const Notes = () => {
 
 
       <div className="row my-3">
-        <h3>Your notes here</h3>
+        <h1>Your notes here</h1>
+        <div className="container">
+
+        {notes.length===0&&"No notes here"}
+        </div>
         {notes.map((note) => {
           return <Noteitem key={note._id} updateNote={updateNote} note={note} />
           

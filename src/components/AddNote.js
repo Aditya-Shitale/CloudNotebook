@@ -6,14 +6,11 @@ import noteContext from "../context/notes/noteContext";
 const AddNote = () => {
   const context = useContext(noteContext);
   const { addNote } = context;
-  const [note, setNote] = useState({
-    title: "",
-    description: "",
-    tag: "default",
-  });
+  const [note, setNote] = useState({  title: "", description: "", tag: "",});
   const handleClick = (e) => {
     e.preventDefault();
     addNote(note.title, note.description, note.tag);
+    setNote(  {title: "", description: "",  tag: "",})
   };
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
@@ -22,7 +19,7 @@ const AddNote = () => {
     <div>
       <div className="container my-3">
         
-        <h3 >Add a note</h3>
+        <h1> Add a note </h1>
 
       
         <form className="my-3"> 
@@ -31,12 +28,15 @@ const AddNote = () => {
               Title
             </label>
             <input
-              type="email"
+              type="text"
+              value={note.title}
               className="form-control"
               id="title"
               name="title"
               aria-describedby="emailHelp"
               onChange={onChange}
+              minLength={5}
+              required
             />
           </div>
           <div className="mb-3">
@@ -45,10 +45,13 @@ const AddNote = () => {
             </label>
             <input
               type="text"
+              value={note.description}
               className="form-control"
               id="description"
               name="description"
               onChange={onChange}
+              minLength={5}
+              required
             />
           </div>
           <div className="mb-3">
@@ -57,6 +60,7 @@ const AddNote = () => {
             </label>
             <input
               type="text"
+              value={note.tag}
               className="form-control"
               id="tag"
               name="tag"
@@ -64,6 +68,7 @@ const AddNote = () => {
             />
           </div>
           <button
+          disabled={note.title.length<5 &&note.description.length<5}
             type="submit"
             className="btn btn-primary"
             onClick={handleClick}

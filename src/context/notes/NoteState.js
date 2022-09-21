@@ -44,17 +44,8 @@ const NoteState = (props) => {
 
     console.log("add a note");
 
-    const note = {
-      _id: "63289e7f126bhc7gb3f4c52897",
-      user: "6324c1cf44781da8e9ea0c9f",
-      title: title,
-      description: description,
-      tag: tag,
-      date: "2022-09-19T16:53:19.427Z",
-      __v: 0,
-    };
+    const note = json;
     if(title!==""&&description!==""){
-
       setNotes(notes.concat(note)); //we wrote notes.push() first but we cant use it because concar returns an array whereas push updates an array
     }
   };
@@ -72,9 +63,9 @@ const NoteState = (props) => {
       },
     });
     const json = response.json();
-    console.log(json);
+    // console.log(json);
 
-    console.log("Delete a note with its ID" + id);
+    // console.log("Delete a note with its ID" + id);
     const newNotes = notes.filter((note) => {
       return note._id !== id;
     });
@@ -96,7 +87,7 @@ const NoteState = (props) => {
       body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
     });
     const json =await response.json();
-    console.log(json);
+    // console.log(json);
 
     const newNotes= JSON.parse(JSON.stringify(notes))  //creates a deep copy of the give notes
     //Logic to edit client
