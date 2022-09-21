@@ -19,22 +19,24 @@ import {
 
 const Notes = () => {
   const context = useContext(noteContext);
-  const { notes, getNotes } = context;
-  const [note, setNote] = useState({ etitle: "", edescription: "", etag: "", });
+  const { notes, getNotes, editNote } = context;
+  const [note, setNote] = useState({id:"", etitle: "", edescription: "", etag: "", });
   useEffect(() => {
     getNotes();
     // eslint-disable-next-line
   }, [])
   const ref = useRef(null);
+  const refClose = useRef(null);
 
   const updateNote = (currentNote) => {
-    console.log("click is been done");
+    // console.log("click is been done");
      ref.current.click();
-     setNote({etitle:currentNote.title,edescription:currentNote.description,etag: currentNote.tag});
+     setNote({id: currentNote._id  ,etitle:currentNote.title,edescription:currentNote.description,etag: currentNote.tag});
   };
   const handleClick = (e) => {
-    console.log("updating the note",note)
-    e.preventDefault();
+    // console.log("updating the note",note);
+    editNote(note.id,note.etitle,note.edescription,note.etag)
+    refClose.current.click();
   };
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
@@ -107,7 +109,7 @@ const Notes = () => {
             </ModalBody>
   
             <ModalFooter>
-              <Button  variant='ghost' mr={3} onClick={onClose}>
+              <Button ref={refClose} variant='ghost' mr={3} onClick={onClose}>
                 Close
               </Button>
               <Button colorScheme='blue' onClick={handleClick}>Update</Button>
