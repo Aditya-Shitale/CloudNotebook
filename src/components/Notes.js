@@ -2,6 +2,20 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import noteContext from "../context/notes/noteContext";
 import Noteitem from "./Noteitem";
 import AddNote from "./AddNote";
+import { ChakraProvider,useDisclosure } from '@chakra-ui/react'
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    Box,
+    Button,
+    
+  } from '@chakra-ui/react'
+
 
 const Notes = () => {
   const context = useContext(noteContext);
@@ -25,28 +39,28 @@ const Notes = () => {
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
   };
-  
+  const { isOpen, onOpen, onClose } = useDisclosure()
+    const finalRef = React.useRef(null)
 
   return (
     <>
       <AddNote />
-      
-<button ref={ref} type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Launch demo modal
-</button>
+      <ChakraProvider>
+      <Box ref={finalRef} tabIndex={-1} aria-label='Focus moved to this box'>
+          {/* Some other content that'll receive focus on close. */}
+        </Box>
+  
+        <Button ref={ref} mt={4} onClick={onOpen} style={{display:"none"}}>
+         Edit note
+        </Button>
+        <Modal finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Update Note</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
 
-
-<div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div className="modal-dialog" role="document">
-    <div className="modal-content">
-      <div className="modal-header">
-        <h5 className="modal-title" id="exampleModalLabel">Update </h5>
-        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div className="modal-body">
-      <form className="my-3"> 
+            <form className="my-3"> 
           <div className="mb-3">
             <label htmlFor="title" className="form-label">
               Title
@@ -89,14 +103,20 @@ const Notes = () => {
           </div>
         
         </form>
-      </div>
-      <div className="modal-footer">
-        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button onClick={handleClick} type="button" className="btn btn-primary">Update Note</button>
-      </div>
-    </div>
-  </div>
-</div>
+
+            </ModalBody>
+  
+            <ModalFooter>
+              <Button  variant='ghost' mr={3} onClick={onClose}>
+                Close
+              </Button>
+              <Button colorScheme='blue' onClick={handleClick}>Update</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+    </ChakraProvider>
+
+
       <div className="row my-3">
         <h3>Your notes here</h3>
         {notes.map((note) => {

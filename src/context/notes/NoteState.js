@@ -51,7 +51,10 @@ const NoteState = (props) => {
       date: "2022-09-19T16:53:19.427Z",
       __v: 0,
     };
-    setNotes(notes.concat(note)); //we wrote notes.push() first but we cant use it because concar returns an array whereas push updates an array
+    if(title!==""&&description!==""){
+
+      setNotes(notes.concat(note)); //we wrote notes.push() first but we cant use it because concar returns an array whereas push updates an array
+    }
   };
 
   //Delete a note

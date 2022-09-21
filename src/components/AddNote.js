@@ -1,5 +1,7 @@
+
 import React, { useContext, useState } from "react";
 import noteContext from "../context/notes/noteContext";
+
 
 const AddNote = () => {
   const context = useContext(noteContext);
@@ -19,7 +21,10 @@ const AddNote = () => {
   return (
     <div>
       <div className="container my-3">
-        <h3>Add a note</h3>
+        
+        <h3 >Add a note</h3>
+
+      
         <form className="my-3"> 
           <div className="mb-3">
             <label htmlFor="title" className="form-label">
