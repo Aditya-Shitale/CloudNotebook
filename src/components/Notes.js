@@ -15,7 +15,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 
-const Notes = () => {
+const Notes = (props) => {
   const context = useContext(noteContext);
   const { notes, getNotes, editNote } = context;
   const [note, setNote] = useState({
@@ -40,11 +40,13 @@ const Notes = () => {
       edescription: currentNote.description,
       etag: currentNote.tag,
     });
+   
   };
   const handleClick = (e) => {
     // console.log("updating the note",note);
     editNote(note.id, note.etitle, note.edescription, note.etag);
     refClose.current.click();
+    props.showAlert("Updated Successfully","success")
   };
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
@@ -54,7 +56,7 @@ const Notes = () => {
 
   return (
     <>
-      <AddNote />
+      <AddNote showAlert={props.showAlert}/>
       <ChakraProvider>
         <Box ref={finalRef} tabIndex={-1} aria-label="Focus moved to this box">
           {/* Some other content that'll receive focus on close. */}
@@ -142,7 +144,7 @@ const Notes = () => {
         <div className="container">{notes.length === 0 && "No notes here"}</div>
         {notes.map((note) => {
           return (
-            <Noteitem key={note._id} updateNote={updateNote} note={note} />
+            <Noteitem key={note._id} showAlert={props.showAlert} updateNote={updateNote} note={note} />
           );
         })}
       </div>

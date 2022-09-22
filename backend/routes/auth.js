@@ -16,15 +16,16 @@ router.post(
     body("password").isLength({ min: 5 }),
   ],
   async (req, res) => {
+    let success=false;
     //if there are errors return bad request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success,errors: errors.array() });
     }
 
     //check whether email exists already
     try {
-      let user = await User.findOne({ email: req.body.email });
+      let user = await User.findOne({success, email: req.body.email });
       if (user) {
         return res
           .status(400)
@@ -48,7 +49,8 @@ router.post(
       }
       const authToken=jwt.sign(data,JWT_SECRET);
       // res.json(user)
-      res.json({authToken})
+      success=true;
+      res.json({success,authToken})
 
 
     } catch (error) {
