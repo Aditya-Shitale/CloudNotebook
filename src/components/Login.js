@@ -1,52 +1,79 @@
 import React from "react";
-import "./log.css";
-import { Link } from "react-router-dom";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-   const[credentials,setCredentials]=useState({email:"",password:""});
-  
-  const handleSubmit=async (e)=>{
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-  
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email: credentials.email, password: credentials.password }),
-      });
-      const json = await response.json();
-      console.log(json);
-  }
+
+  const [credentials,setCredentials]=useState({email:"", password:""})
+  let navigate =useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token":
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjMyNGMxY2Y0NDc4MWRhOGU5ZWEwYzlmIn0sImlhdCI6MTY2MzQyODQ2Nn0.W6FxekqLphyd4G73V6LyYCY8uEFh2YKA71rF8Df4fws",
+      },
+      body: JSON.stringify({email: credentials.email, password: credentials.password }),
+    });
+    const json = await response.json();
+    console.log(json);
+    if(json.success){
+      // save the authtoken and redirect
+      localStorage.setItem('token',json.authtoken);
+      navigate("/",{replace:true})
+    }
+    else{
+
+      alert("Invalid credentials");
+    }
+  };
   const onChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
+
   return (
-    <>
-    <div className="logger">
-      <div className="box">
-        <form className="log" onSubmit={handleSubmit}>
-          <h2>Sign in</h2>
-          <div className="inputBox">
-            <input type="email"  required="required" value={credentials.email} onChange={onChange}/>
-            <span>Email</span>
-            <i></i>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">
+            {" "}
+            Email address
+          </label>
+          <input
+            type="email"
+            className="form-control"
+            id="email"
+            onChange={onChange}
+            name="email"
+            value={credentials.email}
+            aria-describedby="emailHelp"
+          />
+          <div id="emailHelp" className="form-text">
+            We'll never share your email with anyone else.
           </div>
-          <div className="inputBox">
-            <input type="password" required="required" value={credentials.password} onChange={onChange} />
-            <span>Password</span>
-            <i></i>
-          </div>
-          <div className="links">
-            <Link to="#">Forgot Password ?</Link>
-            <Link to="#">Signup</Link>
-          </div>
-          <input type="submit"  value="Login" />
-        </form>
-      </div>
+        </div>
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label">
+            {" "}
+            Password
+          </label>
+          <input
+            type="password"
+            value={credentials.password}
+            onChange={onChange}
+            className="form-control"
+            name="password"
+            id="password"
+          />
+        </div>
+        <button type="submit" className="btn btn-primary">
+          {" "}
+          Submit
+        </button>
+      </form>
     </div>
-    </>
   );
 };
 
