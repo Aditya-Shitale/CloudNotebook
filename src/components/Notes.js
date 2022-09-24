@@ -14,6 +14,7 @@ import {
   Box,
   Button,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const Notes = (props) => {
   const context = useContext(noteContext);
@@ -24,8 +25,15 @@ const Notes = (props) => {
     edescription: "",
     etag: "",
   });
+  const navigate=useNavigate();
   useEffect(() => {
-    getNotes();
+    if(localStorage.getItem("token")){
+
+      getNotes();
+    }
+    else{
+      navigate("/login",{replace:true})
+    }
     // eslint-disable-next-line
   }, []);
   const ref = useRef(null);
