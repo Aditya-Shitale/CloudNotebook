@@ -12,16 +12,15 @@ const Login = (props) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjMyNGMxY2Y0NDc4MWRhOGU5ZWEwYzlmIn0sImlhdCI6MTY2MzQyODQ2Nn0.W6FxekqLphyd4G73V6LyYCY8uEFh2YKA71rF8Df4fws",
+        // "auth-token":
+        //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjMyNGMxY2Y0NDc4MWRhOGU5ZWEwYzlmIn0sImlhdCI6MTY2MzQyODQ2Nn0.W6FxekqLphyd4G73V6LyYCY8uEFh2YKA71rF8Df4fws",
       },
       body: JSON.stringify({email: credentials.email, password: credentials.password }),
     });
     const json = await response.json();
-    console.log(json);
     if(json.success){
       // save the authtoken and redirect
-      localStorage.setItem('token',json.authtoken);
+      localStorage.setItem('token',json.authToken);
       navigate("/",{replace:true})
       props.showAlert("logged in successfully","success")
     }

@@ -144,7 +144,9 @@ const Notes = (props) => {
         <div className="container">{notes.length === 0 && "No notes here"}</div>
         {notes.map((note) => {
           return (
+            
             <Noteitem key={note._id} showAlert={props.showAlert} updateNote={updateNote} note={note} />
+            
           );
         })}
       </div>

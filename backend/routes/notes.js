@@ -27,13 +27,14 @@ router.post(
     }),
   ],
   async (req, res) => {
+     //if there are errors return bad request
+     const errors = validationResult(req);
+     if (!errors.isEmpty()) {
+       return res.status(400).json({ errors: errors.array() });
+     }
+
     try {
       const { title, description, tag } = req.body;
-      //if there are errors return bad request
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
       const note = new Note({
         title,
         description,
@@ -42,10 +43,9 @@ router.post(
       });
       const savedNote = await note.save();
 
-      res.json(savedNote);
+      return res.json(savedNote);
     } catch (error) {
-      console.error(error.message);
-      res.status(500).send("Internal error occured");
+      return res.status(500).send("Internal error occured");
     }
   }
 );

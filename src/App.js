@@ -25,8 +25,8 @@ function App() {
   }
   return (
     <>
-      <NoteState>
         <Router>
+      <NoteState>
           <Navbar />
           <Alert alert={alert}/>
           <div className="container">
@@ -37,8 +37,8 @@ function App() {
               <Route exact path="/signup" element={<Signup showAlert={showAlert}/>}></Route>
             </Routes>
           </div>
-        </Router>
       </NoteState>
+        </Router>
     </>
   );
 }

@@ -1,28 +1,35 @@
 // import react from "react";
 import { useState } from "react";
 import NoteContext from "./noteContext";
+import { useNavigate } from "react-router-dom";
+// import { BrowserRouter } from "react-router-dom";
 
 const NoteState = (props) => {
   const host = "http://localhost:5000";
+  const navigate=useNavigate();
   const notesInitial = [];
-
+// const AUTH_TOKEN= "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjMyNGMxY2Y0NDc4MWRhOGU5ZWEwYzlmIn0sImlhdCI6MTY2MzQyODQ2Nn0.W6FxekqLphyd4G73V6LyYCY8uEFh2YKA71rF8Df4fws";
+const AUTH_TOKEN= localStorage.getItem("token");
   const [notes, setNotes] = useState(notesInitial);
 
   //Get all notes
   const getNotes = async () => {
-    const response = await fetch(`${host}/api/notes/fetchallnotes`, {
-      method: "GET",
-
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjMyNGMxY2Y0NDc4MWRhOGU5ZWEwYzlmIn0sImlhdCI6MTY2MzQyODQ2Nn0.W6FxekqLphyd4G73V6LyYCY8uEFh2YKA71rF8Df4fws",
-      },
-    });
-
-    const json = await response.json();
-    console.log(json);
-    setNotes(json);
+    if(AUTH_TOKEN){
+      // console.log(AUTH_TOKEN);
+      const response = await fetch(`${host}/api/notes/fetchallnotes`, {
+        method: "GET",
+  
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": AUTH_TOKEN  ,    },
+      });
+  
+      const json = await response.json();
+      // console.log(json);
+      setNotes(json);
+    }else{
+  navigate('/login',{replace:true})
+    }
   };
 
   //Add a note
@@ -32,9 +39,7 @@ const NoteState = (props) => {
 
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjMyNGMxY2Y0NDc4MWRhOGU5ZWEwYzlmIn0sImlhdCI6MTY2MzQyODQ2Nn0.W6FxekqLphyd4G73V6LyYCY8uEFh2YKA71rF8Df4fws",
-      },
+        "auth-token": AUTH_TOKEN      },
 
       body: JSON.stringify({ title, description, tag }),
     });
@@ -58,12 +63,10 @@ const NoteState = (props) => {
 
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjMyNGMxY2Y0NDc4MWRhOGU5ZWEwYzlmIn0sImlhdCI6MTY2MzQyODQ2Nn0.W6FxekqLphyd4G73V6LyYCY8uEFh2YKA71rF8Df4fws",
-      },
+        "auth-token": AUTH_TOKEN      },
     });
     const json = response.json();
-    // console.log(json);
+    console.log(json);
 
     // console.log("Delete a note with its ID" + id);
     const newNotes = notes.filter((note) => {
@@ -80,14 +83,12 @@ const NoteState = (props) => {
 
       headers: {
         "Content-Type": "application/json",
-        "auth-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjMyNGMxY2Y0NDc4MWRhOGU5ZWEwYzlmIn0sImlhdCI6MTY2MzQyODQ2Nn0.W6FxekqLphyd4G73V6LyYCY8uEFh2YKA71rF8Df4fws",
-      },
+        "auth-token": AUTH_TOKEN      },
 
       body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
     });
     const json =await response.json();
-    // console.log(json);
+    console.log(json);
 
     const newNotes= JSON.parse(JSON.stringify(notes))  //creates a deep copy of the give notes
     //Logic to edit client
@@ -105,11 +106,11 @@ const NoteState = (props) => {
   };
 
   return (
-    <NoteContext.Provider
-      value={{ notes, addNote, deleteNote, editNote, getNotes }}
-    >
+    // <BrowserRouter>
+    <NoteContext.Provider  value={{ notes, addNote, deleteNote, editNote, getNotes }}  >
       {props.children}
     </NoteContext.Provider>
+      // </BrowserRouter>
   );
 };
 export default NoteState;
