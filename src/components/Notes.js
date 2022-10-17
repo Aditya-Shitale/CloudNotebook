@@ -13,8 +13,10 @@ import {
   ModalCloseButton,
   Box,
   Button,
+
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+
 
 const Notes = (props) => {
   const context = useContext(noteContext);
@@ -66,6 +68,7 @@ const Notes = (props) => {
     <>
       <AddNote showAlert={props.showAlert}/>
       <ChakraProvider>
+      
         <Box ref={finalRef} tabIndex={-1} aria-label="Focus moved to this box">
           {/* Some other content that'll receive focus on close. */}
         </Box>
@@ -73,9 +76,9 @@ const Notes = (props) => {
         <Button ref={ref} mt={4} onClick={onOpen} style={{ display: "none" }}>
           Edit note
         </Button>
-        <Modal finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
+        <Modal finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}  >
           <ModalOverlay />
-          <ModalContent>
+          <ModalContent  background={"white"}>
             <ModalHeader>Update Note</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
